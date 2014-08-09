@@ -32,6 +32,7 @@ var ractive = new Ractive({
   el: 'body',
   template: '<hello-world/>'
 });
+```
 
 
 ## Single-file components
