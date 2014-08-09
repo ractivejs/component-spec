@@ -48,7 +48,7 @@ Components are designed to be completely agnostic about their environment. Use A
 We'll go through each of those things in turn. Below, 'top-level' refers to elements that don't live inside other elements.
 
 
-## <link> tags - imported components (optional)
+## `<link>` tags - imported components (optional)
 
 If a template contains one or more top-level `<link rel='ractive'>` tags, they will be treated as import declarations:
 
@@ -76,7 +76,7 @@ In most cases, the template itself is the most important part of a component. An
 ```
 
 
-## <style> tags - encapsulated CSS (optional)
+## `<style>` tags - encapsulated CSS (optional)
 
 If a template contains one or more top-level `<style>` (or `<style type='text/css'>`) tags, their contents will be added to the `css` property of the object that is passed to `Ractive.extend()`. Unless you specify `noCssTransform` in your `component.exports` object (see below), this CSS will, and render time, be transformed so that it only applies to this component and its children, so you don't need to employ over-engineered namespacing conventions:
 
