@@ -1,6 +1,6 @@
 # Ractive.js component specification
 
-This repo exists to document the specification for **component files** - HTML files that contain the definition of a Ractive component. If you know what you're looking for, skip to the section for [authors](TODO) or [loader implementers](TODO).
+This repo exists to document the specification for **component files** - HTML files that contain the definition of a Ractive component. If you know what you're looking for, skip to the section for [authors](https://github.com/ractivejs/component-spec/blob/master/authors.md) or [loader implementers](https://github.com/ractivejs/component-spec/blob/master/implementers.md).
 
 
 ## What are components?
@@ -74,7 +74,7 @@ For this example, we'll use the [ractive-load](https://github.com/ractivejs/ract
 </html>
 ```
 
-Visit the [page for component authors](TODO) to learn how to write more complex components.
+**Visit the [page for component authors](https://github.com/ractivejs/component-spec/blob/master/authors.md)** to learn how to write more complex components.
 
 
 ## Loading components
@@ -99,4 +99,4 @@ In the example above, we used `Ractive.load()`, which is the easiest way to use 
 
 ## Creating loaders
 
-If your needs aren't met by the existing loaders, you can create your own. [Consult the page for implementers](TODO) for more information. If you create a new component loader, let us know via an issue/pull request on this repo, or tell the [mailing list](groups.google.com/forum/#!forum/ractive-js) and [@RactiveJS](http://twitter.com/RactiveJS) on Twitter. Thanks!
+If your needs aren't met by the existing loaders, you can create your own. **[Consult the page for implementers](https://github.com/ractivejs/component-spec/blob/master/implementers.md) for more information**. If you create a new component loader, let us know via an issue/pull request on this repo, or tell the [mailing list](groups.google.com/forum/#!forum/ractive-js) and [@RactiveJS](http://twitter.com/RactiveJS) on Twitter. Thanks!
