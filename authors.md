@@ -67,9 +67,8 @@ Note that components are **not made globally available** via `Ractive.components
 
 ## The markup
 
-In most cases, the template itself is the most important part of a component. Anything that is not a 'special' tag - `<link>` (other components), `<style>` or `<script>` - is treated as part of the template:
+In most cases, the template itself is the most important part of a component. Anything that is not a 'special' tag - `<link>`, `<style>` or `<script>` - is treated as part of the template:
 
-**hello-world.html**
 ```html
 <h1>{{title}}</h1>
 <p>This is an imported 'foo' component: <foo/></p>
@@ -78,7 +77,7 @@ In most cases, the template itself is the most important part of a component. An
 
 ## `<style>` tags - encapsulated CSS (optional)
 
-If a template contains one or more top-level `<style>` (or `<style type='text/css'>`) tags, their contents will be added to the `css` property of the object that is passed to `Ractive.extend()`. Unless you specify `noCssTransform` in your `component.exports` object (see below), this CSS will, and render time, be transformed so that it only applies to this component and its children, so you don't need to employ over-engineered namespacing conventions:
+If a template contains one or more top-level `<style>` (or `<style type='text/css'>`) tags, their contents will be added to the `css` property of the object that is passed to `Ractive.extend()`. Unless you specify `noCssTransform` in your `component.exports` object (see below), this CSS will, at render time, be transformed so that it only applies to this component and its children, so you don't need to employ over-engineered namespacing conventions:
 
 ```html
 <style>
@@ -87,7 +86,7 @@ If a template contains one or more top-level `<style>` (or `<style type='text/cs
 ```
 
 
-## `<script>` tags and `component.exports` - data and behaviour (optional)
+## `<script>` tags and `component.exports` (optional)
 
 If a template contains one or more top-level `<script>` (or `<script type='text/javascript'>`) tags, their contents will be wrapped in a function and executed once. (Implementation detail alert: if the component has dependencies - see below - the dependencies are loaded first.)
 
@@ -104,9 +103,9 @@ var myLibrary = require( 'myLibrary' );
 
 This is true in all environments, whether or not you're using AMD or whatever. It's the component loader's responsibility to figure out what to do with this. For example, the [ractive-load](https://github.com/ractivejs/ractive-load) plugin would first look for `Ractive.load.modules['myLibrary']`, then would fall back to `window['myLibrary']` in browsers or the native `require('myLibrary')` in node.js. The [rvc](https://github.com/ractivejs/rvc) loader, on the other hand, basically just uses the RequireJS implementation of `require()`.
 
-*GOTCHA 1: For asynchronous loaders like rvc to work, the dependencies must be identified ahead of time, so that they can be loaded before the script executes. Rather than bundling [esprima](http://esprima.org/) and parsing the code to identify those `require()` calls, it's done with regex. For that reason, if something 'looks' like a `require()` call - such as a comment or a string - may cause problems. See [rcu#4](https://github.com/ractivejs/rcu/issues/4).*
+*GOTCHA 1: For asynchronous loaders like rvc to work, the dependencies must be identified ahead of time, so that they can be loaded before the script executes. Rather than bundling [esprima](http://esprima.org/) and parsing the code to identify those `require()` calls, it's done with regex. For that reason, if something 'looks' like a `require()` call - such as a comment or a string - it may cause problems. See [rcu#4](https://github.com/ractivejs/rcu/issues/4).*
 
-*GOTCHA 2: Dependencies on Ractive plugins can be declared with e.g. `require('ractive-events-tap')`. This will throw an error with ractive-load. See [ractive-load#15](https://github.com/ractivejs/ractive-load/issues/15).*
+*GOTCHA 2: Dependencies on Ractive plugins can be declared with e.g. `require('ractive-events-tap')`. This will currently throw an error with ractive-load. See [ractive-load#15](https://github.com/ractivejs/ractive-load/issues/15).*
 
 
 ### `component`
