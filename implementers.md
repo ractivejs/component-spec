@@ -23,7 +23,7 @@ What they all have in common is the end result - a component file should render 
 
 ## rcu - Ractive component utils
 
-The implementation details are entirely up to you, but it's highly recommended that you use [rcu]((https://github.com/ractivejs/rcu) to create your loader, as it has a handful of utilities that make doing so much easier.
+The implementation details are entirely up to you, but it's highly recommended that you use [rcu](https://github.com/ractivejs/rcu) to create your loader, as it has a handful of utilities that make doing so much easier.
 
 In particular, it has the `rcu.parse()` method, which transforms the HTML file into an intermediate representation that's much easier to work with. If we ran the [example component from the authors page](https://github.com/ractivejs/component-spec/blob/master/authors.md#example-component) through `rcu.parse()`, this is what we'd get:
 
@@ -39,7 +39,7 @@ In particular, it has the `rcu.parse()` method, which transforms the HTML file i
 
 From there, it's fairly easy to create JavaScript (e.g. an AMD module), and you can turn it into a constructor (if you're loading components in the browser, as opposed to transforming them during a build step) with `rcu.make()`.
 
-Consult the [rcu documentation]((https://github.com/ractivejs/rcu) for more information.
+Consult the [rcu documentation](https://github.com/ractivejs/rcu) for more information.
 
 
 ## Terminology
