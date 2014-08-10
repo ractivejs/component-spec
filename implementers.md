@@ -75,7 +75,7 @@ options.template = parsed.template;
 ```
 
 
-## `<style> tags
+## `<style>` tags
 
 Any top-level `<style>` (or `<style type='text/css'>`) tags should be concatenated and added to `options` as the `css` property.
 
