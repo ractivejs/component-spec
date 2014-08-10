@@ -64,6 +64,8 @@ This line says 'load the foo.html file, and register it as the foo component'. T
 
 Note that components are **not made globally available** via `Ractive.components` - `<foo/>` only exists inside this component and its children. (Much like passing in a `components` property to `Ractive.extend()`. In fact, exactly like that.) This allows you to easily avoid naming collisions.
 
+It is up to the component loader to determine what the `href` attribute is relative to (unless it begins `./` or `../`, in which case it is relative to the current file). For example in [ractive-load](https://github.com/ractivejs/ractive-load) it's relative to `Ractive.load.baseUrl`, which defaults to the current page. In [rvc](https://github.com/ractivejs/rvc) it's relative to the RequireJS `baseUrl` setting. If in doubt, use relative URLs!
+
 
 ## The markup
 
