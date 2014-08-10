@@ -41,7 +41,7 @@ Do you remember the good old days, when you'd put all your CSS in a `<style>` ta
 
 Ractive remembers, and it's bringing those good times back. It turns out that all the complexity we've introduced in the name of good engineering practices has a real cost in the form of *cognitive burden*. Worse, the 'separation of concerns' mantra has been misunderstood to mean 'separation across syntax boundaries' - in other words, keep your markup, your CSS and your JavaScript separate - when, in fact, properly encapsulated UI components *require* you to consider those languages jointly, not separately. It's just much, *much* more efficient, and easier on your overworked programmer's brain, to (for example) define a CSS class in the same place as you're using it.
 
-A Ractive component file is an HTML file that includes all the markup, data, styles and behaviour necessary to create a component. It can import other Ractive components, and use external libraries (regardless of whether you're using module loaders or Browserify, or whatever). And if your app has a build step, it's straightforward to optimise your components and convert them to pure JavaScript.
+A Ractive component file is an HTML file that includes all the markup, data, styles and behaviour necessary to create a component. It can import other Ractive components, and use external libraries (regardless of whether you're using module loaders or Browserify, or whatever). And if your app *does* have a build step, it's straightforward to optimise your components and convert them to pure JavaScript.
 
 
 ## Hello world, again
@@ -82,7 +82,7 @@ For this example, we'll use the [ractive-load](https://github.com/ractivejs/ract
 
 By itself, Ractive doesn't know what to do with a component file - you have to use a *component loader*. This is because the mechanism for turning a component file into an object that can be passed to `Ractive.extend()` differs from one environment to the next.
 
-In the example above, we used `Ractive.load()`, which is the easiest way to use components (it only depends on Ractive itself). That's fine, but it does have two drawbacks - an HTTP request needs to be made for every component file you end up using, and there's no way to *optimise* the component. So if you're using a build step in your app, you have some other options.
+In the example above, we used `Ractive.load()`, which is the easiest way to use components (it only depends on Ractive itself). That's totally fine, and if you're not building a complex app with many components you shouldn't worry about this too much, but it does have two drawbacks: an HTTP request needs to be made for every component file you end up using, and there's no way to *optimise* the component. So if you're using a build step in your app, you have some other options, listed below.
 
 
 ### Available loaders
