@@ -33,6 +33,8 @@ In particular, it has the `rcu.parse()` method, which transforms the HTML file i
   template: {v:1,t:[ /* template goes here... */] },
   css: 'p { color: red; }',
   script: /* contents of the script tag go here */,
+  scriptStart: 100, /* start of <script> contents */
+  scriptEnd: 200,   /* end of <script> contents */
   modules: [ 'myLibrary' ]
 }
 ```
@@ -89,7 +91,7 @@ Optionally, you can lint and minify CSS during transformation. (Future versions 
 
 ## `<script>` tags
 
-Any top-level `<script>` (or `<script type='text/javascript'>`) tags should be concatenated and executed once, to generate `component.exports` ([see here](https://github.com/ractivejs/component-spec/blob/master/authors.md#component)). When making components, `rcu.make()` handles this for you.
+A top-level `<script>` (or `<script type='text/javascript'>`) tag should be executed once, to generate `component.exports` ([see here](https://github.com/ractivejs/component-spec/blob/master/authors.md#component)). When making components, `rcu.make()` handles this for you.
 
 When transforming components, you need to ensure that when the code executes, it has access to the variables `component`, `require` and `Ractive`, where `component` is an empty object (`{}`), `require` is a function that returns an external dependency, and `Ractive` is, well, Ractive.
 
@@ -106,7 +108,7 @@ require = function ( id ) {
 // We wrap the code in an IIFE so component authors
 // can't bork anything up
 (function ( component, require, Ractive ) {
-  /* content of script tags goes here */
+  /* content of <script> tag goes here */
 }( component, require, Ractive ));
 
 if ( typeof component.exports === 'object' ) {
