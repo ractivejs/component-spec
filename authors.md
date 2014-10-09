@@ -90,7 +90,7 @@ If a template contains one or more top-level `<style>` (or `<style type='text/cs
 
 ## `<script>` tags and `component.exports` (optional)
 
-If a template contains one or more top-level `<script>` (or `<script type='text/javascript'>`) tags, their contents will be wrapped in a function and executed once. (Implementation detail alert: if the component has dependencies - see below - the dependencies are loaded first.)
+If a template contains a top-level `<script>` (or `<script type='text/javascript'>`) tag, its contents will be wrapped in a function and executed once. (Implementation detail alert: if the component has dependencies - see below - the dependencies are loaded first.)
 
 Inside the function you have access to two variables aside from `Ractive` itself - `require` and `component`.
 
