@@ -34,7 +34,7 @@ Components are designed to be completely agnostic about their environment. Use A
   // `component.exports` should basically be what you'd normally use
   // with `Ractive.extend(...)`, except that the template is already specified
   component.exports = {
-    init: function () {
+    onrender: function () {
       alert( 'initing component' );
     },
 
@@ -116,7 +116,7 @@ Much in the same way that node modules have `module.exports`, Ractive components
 
 ```js
 component.exports = {
-  init: function () {
+  onrender: function () {
     alert( 'initing component' );
   },
 
