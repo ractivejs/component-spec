@@ -94,6 +94,7 @@ In the example above, we used `Ractive.load()`, which is the easiest way to use 
 * Browserify
   * [ractify](https://github.com/marcello3d/node-ractify)
   * [ractiveify](https://npmjs.org/package/ractiveify) - similar, but with support for compile-to-JS/CSS languages like CoffeeScript
+  * [ractive-componentify](https://github.com/blackgate/ractive-componentify) - similar to ractiveify but with support for sourcemaps and partial imports
 * Broccoli
   * [broccoli-ractive](https://github.com/ractivejs/broccoli-ractive) - can output AMD, CommonJS or ES6 modules
 
