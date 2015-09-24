@@ -100,6 +100,7 @@ In the example above, we used `Ractive.load()`, which is the easiest way to use 
 * webpack
   * [ractive-loader](https://github.com/rstacruz/ractive-loader) - Supports loading components and partials
 
+
 ## Creating loaders
 
 If your needs aren't met by the existing loaders, you can create your own. **[Consult the page for implementers](https://github.com/ractivejs/component-spec/blob/master/implementers.md) for more information**. If you create a new component loader, let us know via an issue/pull request on this repo, or tell the [mailing list](groups.google.com/forum/#!forum/ractive-js) and [@RactiveJS](http://twitter.com/RactiveJS) on Twitter. Thanks!
