@@ -97,7 +97,8 @@ In the example above, we used `Ractive.load()`, which is the easiest way to use 
   * [ractive-componentify](https://github.com/blackgate/ractive-componentify) - similar to ractiveify but with support for sourcemaps and partial imports
 * Broccoli
   * [broccoli-ractive](https://github.com/ractivejs/broccoli-ractive) - can output AMD, CommonJS or ES6 modules
-
+* Webpack
+  * [ractive-component-loader](https://github.com/thomsbg/ractive-component-loader)
 
 ## Creating loaders
 
