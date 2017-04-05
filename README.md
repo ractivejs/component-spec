@@ -1,105 +1,191 @@
-# Ractive.js component specification
+# Ractive.js component file specification
 
-This repo exists to document the specification for **component files** - HTML files that contain the definition of a Ractive component. If you know what you're looking for, skip to the section for [authors](https://github.com/ractivejs/component-spec/blob/master/authors.md) or [loader implementers](https://github.com/ractivejs/component-spec/blob/master/implementers.md).
+## Background
 
+Complexity introduced in the name of good engineering practices has a real cost in the form of *cognitive burden*. In particular, "separation of concerns" has widely been misunderstood to mean "separation of syntax". It's common seeing developers keep HTML, CSS and JS separate when, in fact, keeping them together is much, _much_ more efficient. Especially under tight deadlines, it's easier to define CSS in the same file as the HTML that uses it, rather than having to hunt down the right file to place it.
 
-## What are components?
+## Ractive component files
 
-Like many front-end libraries and frameworks, Ractive has a concept of *components* - reusable chunks of code that encapsulate templates, data, and behaviour. (Unlike most other tools, Ractive components also allow you to encapsulate styles - more on that later.)
+Remember the good old days? When all CSS went in `<style>` elements in `<head>`? When all JS went in `<script>` elements just before `</body>`? When all HTML was written in Mustache inside inert `<script>` elements? When it felt good when everything just worked after a page refresh? Ractive remembers, and it's bringing those good times back with component files.
 
-The 'hello world' of components looks like this:
-
-```js
-var HelloWorld = Ractive.extend({
-  template: '<h1>Hello world!</h1>'
-});
-
-var ractive = new HelloWorld({
-  el: 'body'
-});
-```
-
-This code creates a new `HelloWorld` component that inherits from `Ractive` - that is to say, you interact with it just as you would with `Ractive` itself. It has a default `template`, so when you call `new HelloWorld()` without specifying a `template` property, it knows what to do.
-
-With `Ractive.extend()`, you can easily create complex UI components that are very simple to use - even entire applications. Consult the [documentation](http://docs.ractivejs.org/latest/ractive-extend) for more information.
-
-You can even use components inside your templates, by *registering* them:
-
-```js
-Ractive.components['hello-world'] = HelloWorld;
-
-var ractive = new Ractive({
-  el: 'body',
-  template: '<hello-world/>'
-});
-```
+Ractive component files are simply a self-contained HTML files that define a component and contains all the markup, data, styles and logic it needs. It's also designed with module management in mind, allowing it to declare library and component dependencies. Best of all, component files are written in the same way regardless of the development process involved, build step or none.
 
 
-## Single-file components
-
-Do you remember the good old days, when you'd put all your CSS in a `<style>` tag at the top of an `index.html` file, and all your code in a `<script>` block at the bottom, and that was okay? The days before starting a new project meant first creating a Rube Goldberg build process, perfecting your folder structure, wrestling with package managers and having heated Twitter debates about SemVer - long before you got to write any actual code? The days before changing a UI component meant editing some JavaScript in one place, realising you needed to hunt down and edit a template in another place, then changing a CSS file in yet another corner of your project (making sure you strictly adhere to whatever BEM/SMACSS/OOCSS guidelines you've laid down for yourself)?
-
-Ractive remembers, and it's bringing those good times back. It turns out that all the complexity we've introduced in the name of good engineering practices has a real cost in the form of *cognitive burden*. Worse, the 'separation of concerns' mantra has been misunderstood to mean 'separation across syntax boundaries' - in other words, keep your markup, your CSS and your JavaScript separate - when, in fact, properly encapsulated UI components *require* you to consider those languages jointly, not separately. It's just much, *much* more efficient, and easier on your overworked programmer's brain, to (for example) define a CSS class in the same place as you're using it.
-
-A Ractive component file is an HTML file that includes all the markup, data, styles and behaviour necessary to create a component. It can import other Ractive components, and use external libraries (regardless of whether you're using module loaders or Browserify, or whatever). And if your app *does* have a build step, it's straightforward to optimise your components and convert them to pure JavaScript.
-
-
-## Hello world, again
-
-For this example, we'll use the [ractive-load](https://github.com/ractivejs/ractive-load) plugin:
-
-**hello-world.html**
 ```html
-<h1>Hello {{name}}!</h1>
+<!-- Example component file -->
+
+<!-- Import a component named Foo from the file foo.html. -->
+<link rel='ractive' href='foo.html' name='foo'>
+
+<!-- Define the markup for this component. -->
+<h1>{{ title }}</h1>
+
+<!-- Use imported foo component -->
+<p>This is an imported 'foo' component: <foo/></p>
+
+<!-- Define the styles for this component. -->
+<style>
+  p { color: red; }
+</style>
+
+<!-- Define the behavior for this component. -->
+<script>
+const $ = require( 'jquery' );
+
+component.exports = {
+  onrender: function () {
+    $('<p />').text('component rendered').insertAfter($this.find('p'));
+  },
+  data: {
+    title: 'Hello World!'
+  }
+};
+</script>
 ```
 
-**index.html**
-```html
-<html>
-<head><title>Ractive component demo</title></head>
-<body>
-  <main><!-- the component will be rendered here --></main>
-  <script src='ractive.js'></script>
-  <script src='ractive-load.js'></script>
-  <script>
-    var ractive;
+## Terminology
 
-    Ractive.load( 'hello-world.html' ).then( function ( HelloWorld ) {
-      ractive = new HelloWorld({
-        el: 'main',
-        data: { name: 'world' }
+- **Loader** - A tool that converts component files either into component constructors or source code.
+- **Loader-specific** - A behavior that is not defined by the spec and is open to custom implementation.
+- **Top-level** - A position where an element is not nested inside another element.
+- **Transform** - The process of converting source code to another form.
+
+## Specification
+
+### `<link rel="ractive">`
+
+Top-level `<link rel="ractive">` elements must be treated as component import declarations.
+
+`href` is a required attribute that defines the location of the import. Paths that start with `./` or `../` must be resolved relative to the current component file. Resolution of paths that do not start with `./` or `../` is loader-specific.
+
+`name` is an optional attribute that defines the registered name of the component. If present, its value must be used as the imported component's registered name. If absent, the file name of the imported component's file, as defined in `href`, must be used instead.
+
+Components imported via `<link rel="ractive">` must only be registered to the importing component. It must neither be registered specifically for an instance nor globally. This is equivalent to using the `components` initialization option inside a `Ractive.extend()`.
+
+### `<style>`
+
+Top-level `<style>` elements must be treated as component CSS.
+
+If more than one top-level `<style>` is found on the component file, their contents must be concatenated in the order of appearance.
+
+Styles defined by a top-level `<style>` must only be registered to the current component. It must neither be registered specifically for an instance nor globally. This is equivalent to using the `css` initialization option inside a `Ractive.extend`.
+
+### `<script>`
+
+Top-level `<script>` tags must be treated as the component script definition.
+
+There must only be one top-level `<script>` tag in a component file. Should there be more than one defined inside the component file, the loader must throw an error.
+
+During evaluation of the script, `component`, `require` and `Ractive` must be present in the scope of the script.
+
+`require` must be a function that accepts a dependency ID and returns a reference to the dependency that corresponds to that ID. This function must be _synchronous/imperative_. The implementation of the underlying dependency management system, including the determination, timing, resolution, and registration of dependencies, is entirely loader-specific. Dependency IDs may not necessarily represent paths to the dependencies.
+
+`component` must be an empty object prior to the script's evaluation. After evaluation, if an `exports` property is present and is an object, that object's properties must be used as the component's initialization options and must be augmented with the following if present:
+
+  - `css` from the contents of the `<style>` elements.
+  - `components` from `<link rel="ractive">` elements.
+  - `template` from the template markup.
+
+`Ractive` must be the currently loaded Ractive.
+
+### Template
+
+Top-level elements that are neither `<link rel="ractive">`, `<style>`, nor `<script>` must be treated as part of the component's template.
+
+Top-level template elements must only be registered to the current component. It must neither be registered specifically for an instance nor globally. This is equivalent to using the `template` initialization option inside a `Ractive.extend`.
+
+## Loaders
+
+By itself a component file is just an HTML file. Alone, it's useless to Ractive, to browsers and to tools. In order to utilize component files, a *component loader* is required.
+
+Loaders may be implemented in any way imaginable, be it a runtime library, a cli tool, or a build-step plugin, as long as it is able to do at least one of two things:
+
+- Transform a component file into a **component constructor**. This type of loader is typically used in apps where the environment does all the heavy lifting at runtime. A typical implementation would have the loader, on runtime, recursively load a component file and its dependencies, create constructors, and return them to the requiring code.
+
+    ```js
+    // Rough concept of how a constructor is created from a component file.
+
+    const componentScript = '/* the contents of <script> */';
+    const options = {
+      css: '/* contents of <style> elements */';
+      template: '/* extracted markup */';
+      components: { /* name-constructor pairs processed from <link rel="ractive"> */ }
+    };
+
+    const component = {};
+    const require = id => loadedDependencies[id];
+    const factory = new Function('component', 'require', 'Ractive', scriptContents);
+
+    // Execute component script
+    factory.call(null, component, require, Ractive);
+
+    // Merge gathered options with those from the script
+    if ( typeof component.exports === 'object' ) {
+      for ( prop in component.exports ) {
+        if ( !component.exports.hasOwnProperty( prop ) ) continue;
+        options[ prop ] = prop === 'css' ? options.prop + component.exports[ prop ]
+          : prop === 'components' ? Object.assign(options.components, component.exports[ prop ])
+          : component.exports[ prop ];
+      }
+    }
+
+    return Ractive.extend(options);
+    ```
+
+- Transform a component file into **JavaScript source code**. This type of loader is typically used as part of a build step or cli. It's normally found at the very beginning to convert component files into JS, usually ES, AMD or CJS modules, so that tools down the pipeline can process them like regular JS (i.e. transpile, bundle, minify, etc.).
+
+    This type of loader also has the benefit of being able to incorporate pre-processors and post-processors, allowing the the component file to be written in different languages (i.e Jade, SASS, ES6+), have templates be pre-parsed with `Ractive.parse()`, as well as have the CSS compacted.
+
+    Taking the example component file at the very begining of this document, a loader could convert it to...
+
+    ```js
+    // An ES module
+    import foo from './foo';
+    import $ from 'jquery';
+
+    export default Ractive.extend({
+      components: { foo },
+      data: { title: 'Hello World!' },
+      onrender: function () {
+        $('<p />').text('component rendered').insertAfter($this.find('p'));
+      },
+      template: {"v":4,"t":[{"t":7,"e":"h1","f":[{"t":2,"r":"title"}]}," ",{"t":7,"e":"p","f":["This is an imported 'foo' component: ",{"t":7,"e":"Foo"}]}]},
+      css: 'p{color:red;}'
+    });
+    ```
+
+    ```js
+    // An AMD module
+    define(function(require, exports, module){
+      const Ractive = require('ractive');
+      const $ = require('jquery');
+      const foo = require('foo.html');
+
+      return Ractive.extend({
+        components: { foo },
+        data: { title: 'Hello World!' },
+        onrender: function () {
+          $('<p />').text('component rendered').insertAfter($this.find('p'));
+        },
+        template: {"v":4,"t":[{"t":7,"e":"h1","f":[{"t":2,"r":"title"}]}," ",{"t":7,"e":"p","f":["This is an imported 'foo' component: ",{"t":7,"e":"Foo"}]}]},
+        css: 'p{color:red;}'
       });
     });
-  </script>
-</body>
-</html>
-```
+    ```
 
-**Visit the [page for component authors](https://github.com/ractivejs/component-spec/blob/master/authors.md)** to learn how to write more complex components.
+    ```js
+    // A CommonJS module
+    const Ractive = require('ractive');
+    const $ = require('jquery');
+    const foo = require('foo.html');
 
-
-## Loading components
-
-By itself, Ractive doesn't know what to do with a component file - you have to use a *component loader*. This is because the mechanism for turning a component file into an object that can be passed to `Ractive.extend()` differs from one environment to the next.
-
-In the example above, we used `Ractive.load()`, which is the easiest way to use components (it only depends on Ractive itself). That's totally fine, and if you're not building a complex app with many components you shouldn't worry about this too much, but it does have two drawbacks: an HTTP request needs to be made for every component file you end up using, and there's no way to *optimise* the component. So if you're using a build step in your app, you have some other options, listed below.
-
-
-### Available loaders
-
-* Plain JavaScript
-  * [ractive-load](https://github.com/ractivejs/ractive-load)
-* RequireJS
-  * [rvc](https://github.com/ractivejs/rvc) - works with the [RequireJS optimiser](http://requirejs.org/docs/optimization.html)
-* Browserify
-  * [ractify](https://github.com/marcello3d/node-ractify)
-  * [ractiveify](https://npmjs.org/package/ractiveify) - similar, but with support for compile-to-JS/CSS languages like CoffeeScript
-  * [ractive-componentify](https://github.com/blackgate/ractive-componentify) - similar to ractiveify but with support for sourcemaps and partial imports
-* Broccoli
-  * [broccoli-ractive](https://github.com/ractivejs/broccoli-ractive) - can output AMD, CommonJS or ES6 modules
-* Webpack
-  * [ractive-component-loader](https://github.com/thomsbg/ractive-component-loader)
-
-## Creating loaders
-
-If your needs aren't met by the existing loaders, you can create your own. **[Consult the page for implementers](https://github.com/ractivejs/component-spec/blob/master/implementers.md) for more information**. If you create a new component loader, let us know via an issue/pull request on this repo, or tell the [mailing list](groups.google.com/forum/#!forum/ractive-js) and [@RactiveJS](http://twitter.com/RactiveJS) on Twitter. Thanks!
+    module.exports = Ractive.extend({
+      components: { foo },
+      data: { title: 'Hello World!' },
+      onrender: function () {
+        $('<p />').text('component rendered').insertAfter($this.find('p'));
+      },
+      template: {"v":4,"t":[{"t":7,"e":"h1","f":[{"t":2,"r":"title"}]}," ",{"t":7,"e":"p","f":["This is an imported 'foo' component: ",{"t":7,"e":"Foo"}]}]},
+      css: 'p{color:red;}'
+    });
+    ```
